@@ -1,4 +1,6 @@
 // resolvers.js
+import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
 const resolvers = {
   Query: {
     //working correct
@@ -114,8 +116,80 @@ const resolvers = {
       return rows.map((row) => ({
         id: row.spec_id,
         name: row.spec_name,
-        
       }));
+    },
+  },
+  Mutation: {
+    addUser: async (
+      _,
+      { name, email, password, confirmPassword },
+      { pool }
+    ) => {
+      const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (password !== confirmPassword) {
+        throw new Error("Password didn't match");
+      }
+      if (!email.match(regex)) {
+        throw new Error("Email is not valid");
+      }
+
+      
+      const [existingUser] = await pool.query(
+        `SELECT p.email FROM Patient p
+        WHERE p.email=?`,
+        [email]
+      );
+      if (existingUser.length > 0) {
+        throw new Error("User already exists");
+      }
+      const hashedPassword = await bcryptjs.hash(password, 10);
+      console.log("existing user", existingUser);
+
+      const [AddedUser] = await pool.query(
+        `INSERT INTO Patient (p_name,email,password) VALUES (?, ?, ?);`,
+        [name, email, hashedPassword]
+      );
+
+      console.log("ADDED USER", AddedUser);
+      return {
+        id: AddedUser.insertId,
+        name: name,
+        email: email,
+      };
+    },
+    loginUser: async (_, { email, password }, { pool }) => {
+      const [existingUser] = await pool.query(
+        `SELECT p.email, p.p_id, p.p_name, p.password FROM Patient p
+        WHERE p.email=?`,
+        [email]
+      );
+      if (existingUser.length == 0) {
+        throw new Error("User not registered");
+      }
+      console.log("EXISTING USER", existingUser[0]);
+      const isPasswordMatched = await bcryptjs.compare(
+        password,
+        existingUser[0].password
+      );
+      console.log("existing user", existingUser);
+
+      if (!isPasswordMatched) {
+        throw new Error("Password is not correct");
+      }
+      const payload = {
+        id: existingUser[0]._id,
+      };
+
+      const token = await jwt.sign(payload, process.env.JWT_SECRET, {
+        expiresIn: "24h",
+      });
+
+      return {
+        id: existingUser[0].p_id,
+        name: existingUser[0].p_name,
+        email: existingUser[0].email,
+        token: token,
+      };
     },
   },
 };

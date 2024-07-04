@@ -22,14 +22,43 @@ export const SPECIALIZATION_BY_DOC_ID = gql`
 `;
 
 export const CLINICS_BY_DOC_ID = gql`
-query ClinicsByDocId($clinicsByDocIdId: ID!) {
-  clinicsByDocId(id: $clinicsByDocIdId) {
-    id
-    name
-    address
-    city
+  query ClinicsByDocId($clinicsByDocIdId: ID!) {
+    clinicsByDocId(id: $clinicsByDocIdId) {
+      id
+      name
+      address
+      city
+    }
   }
-}
-`
+`;
 
+export const SIGNUP_USER = gql`
+  mutation AddUser(
+    $name: String!
+    $email: String!
+    $password: String!
+    $confirmPassword: String!
+  ) {
+    addUser(
+      name: $name
+      email: $email
+      password: $password
+      confirmPassword: $confirmPassword
+    ) {
+      name
+      email
+      id
+    }
+  }
+`;
 
+export const LOGIN_USER = gql`
+  mutation LoginUser($email: String!, $password: String!) {
+    loginUser(email: $email, password: $password) {
+      id
+      name
+      email
+      token
+    }
+  }
+`;
