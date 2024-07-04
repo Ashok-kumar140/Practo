@@ -1,13 +1,25 @@
 export const typeDefs = `#graphql
-  type User {
+  type Doctor{
     id: ID!
     name: String!
-    email: String!
-    
+    fee:Int!
+    experience:Int!
+    profile_img:String!
+    specialization:String
+  }
+  type Speciality{
+    id: ID!
+    name: String!
+
   }
   type Query {
-    users: [User]
-    
+    doctors: [Doctor]
+    doctorByName(name:String!):[Doctor]
+    doctorById(id:ID!):Doctor
+    doctorBySpecialities(speciality:String! limit:Int offset:Int):[Doctor]
+    # doctor(name: String!): Doctor
+    specialities(name:String!):[Speciality]
+
   }
 
   

@@ -1,15 +1,17 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import {typeDefs} from './Schema.js'; // Assuming your schema is in schema.js
-// import resolvers from './resolver.js'; // Update with your actual resolvers file
+import resolvers from './resolvers.js'; // Update with your actual resolvers file
 import mysql from 'mysql2/promise'; // Using promise-based MySQL client
 import dotenv from 'dotenv';
-
+import cors from 'cors';
 const app = express();
 dotenv.config();
 const startServer = async () => {
   try {
     // Create MySQL connection pool
+
+    app.use(cors());
     const pool = mysql.createPool({
       host: process.env.HOST,
       user: process.env.DB_USER,
@@ -25,7 +27,7 @@ const startServer = async () => {
 
     const server = new ApolloServer({
       typeDefs,
-    //   resolvers,
+      resolvers,
       context: { pool } 
     });
 
