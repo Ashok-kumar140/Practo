@@ -1,46 +1,46 @@
 import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { useParams } from "react-router-dom";
-
+import { BsFillLightningChargeFill } from "react-icons/bs";
+import { MdOutlineLocationOn } from "react-icons/md";
+import {
+  CLINICS_BY_DOC_ID,
+  DOCTOR_BY_ID,
+  SPECIALIZATION_BY_DOC_ID,
+} from "../utils/Queries";
+import { LiaHandPointRightSolid } from "react-icons/lia";
 const DoctorPage = () => {
   const { id } = useParams();
-  const doctor_query = gql`
-    query DoctorById($doctorByIdId: ID!) {
-      doctorById(id: $doctorByIdId) {
-        id
-        name
-        fee
-        experience
-        profile_img
-      }
-    }
-  `;
-// const doctor_query = gql`
-//     query DoctorByName($name: String!) {
-//   doctorByName(name: $name) {
-//     id
-//     name
-//     fee
-//     experience
-//     profile_img
-//   }
-// }
-//   `;
 
   const {
     loading,
     error,
     data: doctor_data,
-  } = useQuery(doctor_query, {
+  } = useQuery(DOCTOR_BY_ID, {
     variables: { doctorByIdId: id },
   });
-  console.log(id);
-  
 
-  console.log("DOCtor", doctor_data);
+  const {
+    loading: spec_loading,
+    error: spec_error,
+    data: specialization_data,
+  } = useQuery(SPECIALIZATION_BY_DOC_ID, {
+    variables: { specialityByDocIdId: id },
+  });
+
+  const {
+    loading: clinic_loading,
+    error: clinic_error,
+    data: clinic_data,
+  } = useQuery(CLINICS_BY_DOC_ID, {
+    variables: { clinicsByDocIdId: id },
+  });
+  console.log(id);
+
+  console.log("DOCtor", clinic_data);
   return (
     <>
-      {doctor_data && doctor_data.doctorById&& (
+      {doctor_data && doctor_data.doctorById && (
         <div className="w-[50%] mt-10 mx-auto bg-white shadow-md rounded-lg p-6">
           <div className="flex items-center gap-10 mb-4 ">
             <img
@@ -59,43 +59,62 @@ const DoctorPage = () => {
                 Pediatric Dentist, Dentist, Dental Surgeon
               </p>
               <p className="text-sm text-gray-600">
-              {doctor_data.doctorById.experience} Years Experience Overall
+                {doctor_data.doctorById.experience} Years Experience Overall
               </p>
+              <div className="flex items-center space-x-2 my-4">
+                <span className="text-white bg-green-600 rounded-full w-[20px] h-[20px] flex items-center justify-center">
+                  ✓
+                </span>
+                <p className="text-sm font-semibold text-gray-800">
+                  Medical Registration Verified
+                </p>
+              </div>
             </div>
           </div>
           <div className="bg-blue-100 p-4 rounded-md mb-4">
-            <p className="text-blue-600 font-bold">practo DENTAL</p>
-            <p className="text-sm text-blue-600">
-              Trusted Care. Lasting Smiles.
+            <p className="text-xl font-bold text-gray-700 mb-4">
+              Specialization In
             </p>
-          </div>
-          <div className="flex items-center space-x-2 mb-4">
-            <span className="text-white bg-green-600 rounded-full w-[20px] h-[20px] flex items-center justify-center">
-              ✓
-            </span>
-            <p className="text-sm font-semibold text-gray-800">
-              Medical Registration Verified
+            <ul className="ml-5 grid sm:grid-cols-2  text-gray-500">
+              {specialization_data &&
+                specialization_data.specialityByDocId?.map((spec) => (
+                  <li className="flex gap-2 items-center ">
+                    <LiaHandPointRightSolid
+                      className="text-gray-400"
+                      fill="#CD7F32"
+                    />
+                    {spec.name}
+                  </li>
+                ))}
+            </ul>
+            <p className="text-xl font-bold text-gray-700 my-4">
+              {doctor_data.doctorById.name} Practices At
             </p>
+            <ul className="ml-5 grid grid-cols-1  text-gray-500">
+              {clinic_data &&
+                clinic_data.clinicsByDocId?.map((clinic) => (
+                  <li className="" key={clinic.id}>
+                    <div className="flex gap-2 items-center text-gray-700 ">
+                      <MdOutlineLocationOn fill="#CD7F32" />
+                      {clinic.name}
+                    </div>
+                    <p className="ml-10 text-sm">
+                      {clinic.address}, {clinic.city}
+                    </p>
+                  </li>
+                ))}
+            </ul>
           </div>
-          <p className="text-gray-800 mb-4">
-            Dr. Sneha Gurukar is a Pediatric Dentist, Dentist, and Dental
-            Surgeon in Kundalahalli, Bangalore and has an experience of 20 years
-            in these fields. Dr. Sneha Gurukar practices at Gajanana Smile Care
-            Dental Clinic in Kundalahalli, Bangalore, Axiss Dental Clinic -
-            Domlur in Domlur, Bangalore and Axiss Dental Clinic - Jeevan Bhema
-            Nagar in Jeevanbhimanagar, Bangalore. She completed BDS from
-            Bangalore University in 1998 and MDS - Paedodontics And Preventive
-            Dentistry from Rajiv Gandhi University of Health Sciences in 2016.
-          </p>
-          <p className="text-gray-800 mb-4">
-            She is a member of Karnataka State Dental Council. Some of the
-            services provided by the doctor are: Laser Lip Surgery, Inlays and
-            Onlays, Temporomandibular Joint Dysfunction - ATM, Scraping
-            Periodontal and Zirconia Crowns etc.
-          </p>
-          <a href="#" className="text-blue-600">
-            Share your story
-          </a>
+          <div className="flex items-center justify-center">
+            <button className="text-white bg-[#199fd9] p-2 w-[220px] h-[48px] rounded-md">
+              <div className=" flex items-center justify-center gap-2">
+                <BsFillLightningChargeFill fill="#FFFFFF" />
+                <p>Book Appointment</p>
+              </div>
+
+              <p className="text-xs text-center">Instant Pay Available</p>
+            </button>
+          </div>
         </div>
       )}
     </>

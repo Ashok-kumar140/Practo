@@ -10,6 +10,13 @@ export const typeDefs = `#graphql
   type Speciality{
     id: ID!
     name: String!
+    
+  }
+  type Clinic{
+    id: ID!
+    name:String!
+    address:String!
+    city:String!
 
   }
   type Query {
@@ -17,8 +24,9 @@ export const typeDefs = `#graphql
     doctorByName(name:String!):[Doctor]
     doctorById(id:ID!):Doctor
     doctorBySpecialities(speciality:String! limit:Int offset:Int):[Doctor]
-    # doctor(name: String!): Doctor
+    clinicsByDocId(id: ID!): [Clinic]
     specialities(name:String!):[Speciality]
+    specialityByDocId(id:ID!):[Speciality]
 
   }
 
