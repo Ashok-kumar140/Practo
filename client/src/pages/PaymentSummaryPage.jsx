@@ -20,6 +20,12 @@ const PaymentSummaryPage = () => {
     (state) => state.doctor
   );
   // const amount = doctor.fee;
+  useEffect(() => {
+    if (!user) {
+      navigate('/login')
+      return;
+    }
+  },[]);
 
   const [
     createPayment,
@@ -39,11 +45,7 @@ const PaymentSummaryPage = () => {
     },
   ] = useMutation(ADD_APPOINTMENT);
 
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  });
+  
 
   const handlePayment = async () => {
     try {
@@ -77,7 +79,7 @@ const PaymentSummaryPage = () => {
         },
       };
       const paymentObject = new window.Razorpay(options);
-      console.log("payment", paymentObject);
+      // console.log("payment", paymentObject);
 
       paymentObject.open();
       paymentObject.on("payment.failed", function (response) {
@@ -138,7 +140,7 @@ const PaymentSummaryPage = () => {
         <div className="flex items-center justify-between gap-3">
           <div className="rounded-[100%]">
             <img
-              src={doctor.profile_img}
+              src={doctor?.profile_img}
               alt=""
               width={100}
               height={100}
@@ -147,10 +149,10 @@ const PaymentSummaryPage = () => {
           </div>
           <div>
             <p className="text-[#199fd9] rounded-md text-xl">
-              {doctor.name}
+              {doctor?.name}
             </p>
-            <p>{doctor.experience} years experience</p>
-            <p>₹ {doctor.fee} Consultation Fees</p>
+            <p>{doctor?.experience} years experience</p>
+            <p>₹ {doctor?.fee} Consultation Fees</p>
           </div>
         </div>
         {/* <div>
@@ -163,18 +165,18 @@ const PaymentSummaryPage = () => {
         <div >
           <div className="flex gap-2 items-center text-gray-700 ">
             <MdOutlineLocationOn fill="#CD7F32" />
-            {doctor_clinics.name}
+            {doctor_clinics?.name}
           </div>
           <p className="ml-10 text-sm">
-            {doctor_clinics.address}, {doctor_clinics.city}
+            {doctor_clinics?.address}, {doctor_clinics?.city}
           </p>
         </div>
        
         <div className="mt-10 font-semibold text-lg">Timing of appointment is : {`${slot_time}:00`}</div>
 
-        <div className="mt-5 font-semibold text-sm">Fee to pay for this appointment is ₹{doctor.fee}</div>
+        <div className="mt-5 font-semibold text-sm">Fee to pay for this appointment is ₹{doctor?.fee}</div>
         <div className="flex justify-center items-center mt-5">
-          <button className="p-2 bg-[#199fd9] rounded-md text-white" onClick={handlePayment}>Pay ₹ {doctor.fee} </button>
+          <button className="p-2 bg-[#199fd9] rounded-md text-white" onClick={handlePayment}>Pay ₹ {doctor?.fee} </button>
         </div>
       </div>
     </div>

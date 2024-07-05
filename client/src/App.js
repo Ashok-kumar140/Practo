@@ -22,7 +22,7 @@ function App() {
         <Route path="/search/doctor/:id" element={<DoctorPage />} />
         <Route path="/doctor/slot/:doc_id" element={<SlotPage />} />
         <Route path="/slot/:slot_time/payment-summary" element={<PaymentSummaryPage />} />
-        <Route path="/appointmennt-confirmatio" element={<AppointmentConfirmation/>}/>
+        <Route path="/appointment-confirmation" element={<AppointmentConfirmation/>}/>
       </Routes>
     </div>
   );

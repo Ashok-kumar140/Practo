@@ -44,7 +44,13 @@ export const typeDefs = `#graphql
     clinic_id:ID!
     start_time:Int!
     success:Boolean
-    doctor:Doctor
+    doc_name:String
+    doc_fee:String
+    doc_experience:Int
+    clinic_name:String
+    clinic_address:String
+    clinic_city:String
+    doc_profile:String
   }
   type PaymentVerificationResponse{
     success: Boolean
@@ -70,6 +76,7 @@ export const typeDefs = `#graphql
     createOrder(amount: Int): Order
     verifyPayment(razorpay_order_id: String!, razorpay_payment_id: String!, razorpay_signature: String!): PaymentVerificationResponse
     addAppointment(doc_id:ID!,pat_id:ID!,clinic_id:ID!,start_time:Int!): Appointment
+    appointmentByDocIdAndClinicId(doc_id:ID!,clinic_id:ID!):[Appointment]
   },
   # Doctor:{
   #   clinics: {}

@@ -121,3 +121,40 @@ export const ADD_APPOINTMENT = gql`
     }
   }
 `;
+
+export const USER_APPOINTMENTS = gql`
+  query AppointmentsByPatId($patId: ID!) {
+    appointmentsByPatId(pat_id: $patId) {
+      id
+      doc_id
+      pat_id
+      clinic_id
+      start_time
+      doc_name
+      clinic_address
+      clinic_city
+      doc_fee
+      clinic_name
+      doc_experience
+      doc_profile
+    }
+  }
+`;
+export const USER_APPOINTMENTS2 = gql`
+  mutation AppointmentByDocIdAndClinicId($docId: ID!, $clinicId: ID!) {
+  appointmentByDocIdAndClinicId(doc_id: $docId, clinic_id: $clinicId) {
+    id
+    doc_id
+    pat_id
+    clinic_id
+    start_time
+    doc_name
+    doc_fee
+    doc_experience
+    clinic_name
+    clinic_address
+    clinic_city
+    doc_profile
+  }
+}
+`;

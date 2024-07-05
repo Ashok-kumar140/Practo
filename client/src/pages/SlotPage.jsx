@@ -1,32 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiSolidCommentAdd } from "react-icons/bi";
 import {
   ALREADY_BOOKED_SLOTS,
   CLINICS_BY_DOC_ID,
   DOCTOR_BY_ID,
+  USER_APPOINTMENTS2,
 } from "../utils/Queries";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { useSelector } from "react-redux";
 
 const SlotPage = () => {
   const navigate = useNavigate();
+  const [bookedSlots, setBookedSlots] = useState([]);
+  const [load,setLoad] = useState(false);
 
   const { doctor_clinics } = useSelector((state) => state.doctor);
   const { doctor } = useSelector((state) => state.doctor);
-  console.log("DOC", doctor_clinics);
+  console.log("DOC", doctor.id);
 
-  const { loading, error, data } = useQuery(ALREADY_BOOKED_SLOTS, {
-    variables: { docId: doctor.id, clinicId: doctor_clinics.id },
-  });
-  const BookedSlots = [];
+  // const { loading, error, data } = useQuery(ALREADY_BOOKED_SLOTS, {
+  //   variables: { docId: doctor?.id, clinicId: doctor_clinics?.id },
+  // });
 
-  data &&
-    data.appointmentByDocIdAndClinicId.map((app) => {
-      BookedSlots.push(app.start_time);
-    });
-  console.log("DATAA", BookedSlots);
+  const [alreadyBookedSlot, { data, loading, error }] =
+    useMutation(USER_APPOINTMENTS2);
+
+  const hanldeBookedSlot = async () => {
+    setLoad(true);
+    try {
+      const data = await alreadyBookedSlot({
+        variables: {
+          docId: doctor?.id,
+          clinicId: doctor_clinics?.id,
+        },
+      });
+      console.log("RESPONSE",data);
+      const BookedSlots = data.data.appointmentByDocIdAndClinicId.map(
+        (app) => app.start_time
+      );
+      setBookedSlots(BookedSlots);
+
+    } catch (error) {
+      console.log("Error", error);
+    }
+    setLoad(false);
+  };
+
+  useEffect(()=>{
+    hanldeBookedSlot();
+  },[]);
+
+  // console.log("Loading", loading);
+  // const BookedSlots = [];
+  // useEffect(() => {
+  //   if (data && data.appointmentByDocIdAndClinicId) {
+  //     console.log("DAAAAAA", data);
+  //     const BookedSlots = data.appointmentByDocIdAndClinicId.map(
+  //       (app) => app.start_time
+  //     );
+      console.log("DATAA", bookedSlots);
+      // setBookedSlots(BookedSlots);
+  //   }
+  // }, [data]);
 
   const slot = [];
   let start = doctor_clinics.start_time;
@@ -48,7 +85,7 @@ const SlotPage = () => {
                 <BiSolidCommentAdd fill="#318CE7" />
                 <p>Clinic Appointment</p>
               </div>
-              <p>₹ {doctor.fee} fee</p>
+              <p>₹ {doctor?.fee} fee</p>
             </div>
           </div>
           <div>
@@ -65,29 +102,28 @@ const SlotPage = () => {
             </ul>
           </div>
           <div className="grid grid-cols-4 gap-3 m-3 ">
-            {BookedSlots &&
-              slot.map((s, index) => {
-                if (BookedSlots.includes(s)) {
-                  return (
-                    <div
-                      key={index}
-                      className={`border-[1px] border-red-600 w-[70px] p-3 text-red-400 rounded-md `}
-                    >
-                      {`${s}:00`}
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      key={index}
-                      onClick={() => navigate(`/slot/${s}/payment-summary`)}
-                      className={`border-[1px] border-[#199fd9] w-[70px] p-3 text-[#199fd9] rounded-md cursor-pointer `}
-                    >
-                      {`${s}:00`}
-                    </div>
-                  );
-                }
-              })}
+            {slot.map((s, index) => {
+              if (bookedSlots.includes(s)) {
+                return (
+                  <div
+                    key={index}
+                    className={`border-[1px] border-red-600 w-[70px] p-3 text-red-400 rounded-md `}
+                  >
+                    {`${s}:00`}
+                  </div>
+                );
+              } else {
+                return (
+                  <div
+                    key={index}
+                    onClick={() => navigate(`/slot/${s}/payment-summary`)}
+                    className={`border-[1px] border-[#199fd9] w-[70px] p-3 text-[#199fd9] rounded-md cursor-pointer `}
+                  >
+                    {`${s}:00`}
+                  </div>
+                );
+              }
+            })}
           </div>
         </div>
       </div>

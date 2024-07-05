@@ -19,6 +19,7 @@ const DoctorPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  console.log("ID",id);
 
   const {
     loading,
@@ -45,7 +46,7 @@ const DoctorPage = () => {
   });
   // console.log(id);
 
-  // console.log("DOCtor", clinic_data);
+  console.log("DOCtor",doctor_data);
 
   const handleBookAppointment = (clinic) => {
     dispatch(setDoctor(doctor_data.doctorById));
@@ -100,7 +101,7 @@ const DoctorPage = () => {
             <ul className="ml-5 grid sm:grid-cols-2  text-gray-500">
               {specialization_data &&
                 specialization_data.specialityByDocId?.map((spec) => (
-                  <li className="flex gap-2 items-center ">
+                  <li className="flex gap-2 items-center " key={spec.id}>
                     <LiaHandPointRightSolid
                       className="text-gray-400"
                       fill="#CD7F32"

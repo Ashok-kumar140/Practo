@@ -149,8 +149,13 @@ const resolvers = {
       { pool }
     ) => {
       const [appointments] = await pool.query(
-        `SELECT t.doc_id, t.pat_id, t.clinic_id, t.slot_start_time, t.doc_pat_id FROM doc_pat_mapping t
-         WHERE t.pat_id=?`,
+        `SELECT a.doc_pat_id, a.pat_id, a.slot_start_time, d.d_id as doc_id, d.d_name as doc_name,
+                  d.d_experience, d.d_fee, c.c_id as clinic_id, c.ClinicName as clinic_name, d.profile_img,
+                  c.Address, c.City
+           FROM doc_pat_mapping a
+           JOIN Doctor d ON a.doc_id = d.d_id
+           JOIN Clinic c ON a.clinic_id = c.c_id
+           WHERE a.pat_id = ?`,
         [pat_id]
       );
 
@@ -162,6 +167,13 @@ const resolvers = {
         pat_id: row.pat_id,
         clinic_id: row.clinic_id,
         start_time: row.slot_start_time,
+        doc_name:row.doc_name,
+        clinic_address:row.Address,
+        clinic_city:row.City,
+        doc_fee:row.d_fee,
+        clinic_name:row.clinic_name,
+        doc_experience:row.d_experience,
+        doc_profile:row.profile_img
       }));
     },
   },
@@ -306,6 +318,28 @@ const resolvers = {
         success: true,
       };
     },
+    appointmentByDocIdAndClinicId: async (
+      _,
+      { doc_id, clinic_id },
+      { pool }
+    ) => {
+      const [appointments] = await pool.query(
+        `SELECT t.doc_id, t.pat_id, t.clinic_id, t.slot_start_time, t.doc_pat_id FROM doc_pat_mapping t
+        WHERE t.doc_id=? AND t.clinic_id=?`,
+        [doc_id, clinic_id]
+      );
+
+      console.log("APPOINTMENTS", appointments);
+
+      return appointments.map((row) => ({
+        id: row.doc_pat_id,
+        doc_id: row.doc_id,
+        pat_id: row.pat_id,
+        clinic_id: row.clinic_id,
+        start_time: row.slot_start_time,
+      }));
+    },
+    
   },
 };
 
