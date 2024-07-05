@@ -18,7 +18,8 @@ const SlotPage = () => {
 
   const { doctor_clinics } = useSelector((state) => state.doctor);
   const { doctor } = useSelector((state) => state.doctor);
-  console.log("DOC", doctor.id);
+
+  console.log("DOC", doctor);
 
   // const { loading, error, data } = useQuery(ALREADY_BOOKED_SLOTS, {
   //   variables: { docId: doctor?.id, clinicId: doctor_clinics?.id },
@@ -36,7 +37,7 @@ const SlotPage = () => {
           clinicId: doctor_clinics?.id,
         },
       });
-      console.log("RESPONSE",data);
+      // console.log("RESPONSE",data);
       const BookedSlots = data.data.appointmentByDocIdAndClinicId.map(
         (app) => app.start_time
       );
@@ -60,10 +61,11 @@ const SlotPage = () => {
   //     const BookedSlots = data.appointmentByDocIdAndClinicId.map(
   //       (app) => app.start_time
   //     );
-      console.log("DATAA", bookedSlots);
+      // console.log("DATAA", bookedSlots);
       // setBookedSlots(BookedSlots);
   //   }
   // }, [data]);
+  if (loading) return <p>Loading...</p>;
 
   const slot = [];
   let start = doctor_clinics.start_time;

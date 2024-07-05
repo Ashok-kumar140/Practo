@@ -90,7 +90,7 @@ const Searchbar = () => {
     navigate(`/search/doctor/${doc_name}`);
   };
 
-  console.log("data", doctorData);
+  // console.log("data", doctorData);
 
   return (
     <>

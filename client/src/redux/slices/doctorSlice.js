@@ -17,10 +17,10 @@ const doctorSlice = createSlice({
   initialState: initialState,
   reducers: {
     setDoctor(state, value) {
-      state.doctor_specialities = value.payload;
+      state.doctor = value.payload;
     },
     setDoctorSpecialities(state, value) {
-      state.user = value.payload;
+      state.doctor_specialities = value.payload;
     },
     setDoctorClinics(state, value) {
       state.doctor_clinics = value.payload;

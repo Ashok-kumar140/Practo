@@ -1,9 +1,9 @@
 .input-field-style {
-    background-color: rgb(30 41 59);
+    background-color: rgb(162, 169, 179);
     padding: 12px;
     border-radius: 0.5rem;
     --tw-text-opacity: 1;
-    color: rgb(241 242 255 / var(--tw-text-opacity));
+    color: black;
     width: 100%;
     box-shadow: rgba(255, 255, 255, 0.18) 0px -1px 0px inset;
   }
@@ -13,5 +13,5 @@
     line-height: 1.375rem;
     margin-bottom: 0.25rem;
     --tw-text-opacity: 1;
-    color: rgb(241 242 255 / var(--tw-text-opacity));
+    color: black;
   }

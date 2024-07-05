@@ -12,6 +12,27 @@ export const DOCTOR_BY_ID = gql`
   }
 `;
 
+export const DOCTORS_BY_SPECIALITY = gql`
+  mutation DoctorBySpeciality(
+    $speciality: String!
+    $limit: Int!
+    $offset: Int!
+  ) {
+    doctorBySpeciality(
+      speciality: $speciality
+      limit: $limit
+      offset: $offset
+    ) {
+      id
+      name
+      fee
+      experience
+      profile_img
+      specialization
+    }
+  }
+`;
+
 export const SPECIALIZATION_BY_DOC_ID = gql`
   query SpecialityByDocId($specialityByDocIdId: ID!) {
     specialityByDocId(id: $specialityByDocIdId) {
@@ -142,19 +163,19 @@ export const USER_APPOINTMENTS = gql`
 `;
 export const USER_APPOINTMENTS2 = gql`
   mutation AppointmentByDocIdAndClinicId($docId: ID!, $clinicId: ID!) {
-  appointmentByDocIdAndClinicId(doc_id: $docId, clinic_id: $clinicId) {
-    id
-    doc_id
-    pat_id
-    clinic_id
-    start_time
-    doc_name
-    doc_fee
-    doc_experience
-    clinic_name
-    clinic_address
-    clinic_city
-    doc_profile
+    appointmentByDocIdAndClinicId(doc_id: $docId, clinic_id: $clinicId) {
+      id
+      doc_id
+      pat_id
+      clinic_id
+      start_time
+      doc_name
+      doc_fee
+      doc_experience
+      clinic_name
+      clinic_address
+      clinic_city
+      doc_profile
+    }
   }
-}
 `;

@@ -140,11 +140,11 @@ const SignupForm = ({ setIsLogin }) => {
           )}
         </div>
         <div className="flex items-center justify-center mt-4">
-          <button className="py-2 bg-red-500 cursor-pointer rounded-md w-[100%]">
+          <button className="py-2 bg-black cursor-pointer rounded-md w-[100%] text-white">
             {loading ? "Loading..." : "Sign Up"}
           </button>
         </div>
-        <div className="text-white mb-2 text-center">
+        <div className="text-black mb-2 text-center">
           <div className="flex items-center justify-center">
             Already have an account?
             <p

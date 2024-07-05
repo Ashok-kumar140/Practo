@@ -143,11 +143,7 @@ const resolvers = {
         start_time: row.slot_start_time,
       }));
     },
-    appointmentsByPatId: async (
-      _,
-      { pat_id },
-      { pool }
-    ) => {
+    appointmentsByPatId: async (_, { pat_id }, { pool }) => {
       const [appointments] = await pool.query(
         `SELECT a.doc_pat_id, a.pat_id, a.slot_start_time, d.d_id as doc_id, d.d_name as doc_name,
                   d.d_experience, d.d_fee, c.c_id as clinic_id, c.ClinicName as clinic_name, d.profile_img,
@@ -167,13 +163,13 @@ const resolvers = {
         pat_id: row.pat_id,
         clinic_id: row.clinic_id,
         start_time: row.slot_start_time,
-        doc_name:row.doc_name,
-        clinic_address:row.Address,
-        clinic_city:row.City,
-        doc_fee:row.d_fee,
-        clinic_name:row.clinic_name,
-        doc_experience:row.d_experience,
-        doc_profile:row.profile_img
+        doc_name: row.doc_name,
+        clinic_address: row.Address,
+        clinic_city: row.City,
+        doc_fee: row.d_fee,
+        clinic_name: row.clinic_name,
+        doc_experience: row.d_experience,
+        doc_profile: row.profile_img,
       }));
     },
   },
@@ -339,7 +335,26 @@ const resolvers = {
         start_time: row.slot_start_time,
       }));
     },
-    
+    doctorBySpeciality: async (_, { speciality, limit, offset }, { pool }) => {
+      const [rows] = await pool.query(
+        `SELECT d.d_id,d.d_name,d.d_fee,d.d_experience,d.profile_img,s.spec_name
+          FROM Doctor d
+          JOIN Spec_Doct_mapping sd ON d.d_id = sd.d_id
+          JOIN Specialization s ON sd.s_id = s.spec_id
+          WHERE s.spec_name LIKE ?
+          LIMIT ? OFFSET ?
+        `,
+        [`%${speciality}%`, limit, offset]
+      );
+      return rows.map((row) => ({
+        id: row.d_id,
+        name: row.d_name,
+        fee: row.d_fee,
+        experience: row.d_experience,
+        profile_img: row.profile_img,
+        specialization: row.spec_name,
+      }));
+    },
   },
 };
 

@@ -9,7 +9,7 @@ import {
   DOCTOR_BY_ID,
   SPECIALIZATION_BY_DOC_ID,
 } from "../utils/Queries";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setDoctor,
   setDoctorClinics,
@@ -19,7 +19,8 @@ const DoctorPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log("ID",id);
+  // console.log("ID",id);
+  const {doctor} = useSelector((state)=>state.doctor);
 
   const {
     loading,
@@ -49,7 +50,7 @@ const DoctorPage = () => {
   console.log("DOCtor",doctor_data);
 
   const handleBookAppointment = (clinic) => {
-    dispatch(setDoctor(doctor_data.doctorById));
+    dispatch(setDoctor(doctor?(doctor):(doctor_data.doctorById)));
     localStorage.setItem("doctor", JSON.stringify(doctor_data.doctorById));
 
     dispatch(setDoctorClinics(clinic));

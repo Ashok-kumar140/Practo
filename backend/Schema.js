@@ -62,12 +62,13 @@ export const typeDefs = `#graphql
     doctors: [Doctor]
     doctorByName(name:String!):[Doctor]
     doctorById(id:ID!):Doctor
-    doctorBySpecialities(speciality:String! limit:Int offset:Int):[Doctor]
+    doctorBySpecialities(speciality:String!):[Doctor]
     clinicsByDocId(id: ID!): [Clinic]
     specialities(name:String!):[Speciality]
     specialityByDocId(id:ID!):[Speciality]
     appointmentByDocIdAndClinicId(doc_id:ID!,clinic_id:ID!):[Appointment]
     appointmentsByPatId(pat_id:ID!):[Appointment]
+    
 
   }
   type Mutation{
@@ -77,6 +78,7 @@ export const typeDefs = `#graphql
     verifyPayment(razorpay_order_id: String!, razorpay_payment_id: String!, razorpay_signature: String!): PaymentVerificationResponse
     addAppointment(doc_id:ID!,pat_id:ID!,clinic_id:ID!,start_time:Int!): Appointment
     appointmentByDocIdAndClinicId(doc_id:ID!,clinic_id:ID!):[Appointment]
+    doctorBySpeciality(speciality:String!, limit:Int!, offset:Int!):[Doctor]
   },
   # Doctor:{
   #   clinics: {}
