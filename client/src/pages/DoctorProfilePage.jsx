@@ -1,16 +1,24 @@
 import React from "react";
 import { useQuery, gql } from "@apollo/client";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { MdOutlineLocationOn } from "react-icons/md";
+import { LiaHandPointRightSolid } from "react-icons/lia";
 import {
   CLINICS_BY_DOC_ID,
   DOCTOR_BY_ID,
   SPECIALIZATION_BY_DOC_ID,
 } from "../utils/Queries";
-import { LiaHandPointRightSolid } from "react-icons/lia";
+import { useDispatch } from "react-redux";
+import {
+  setDoctor,
+  setDoctorClinics,
+  setDoctorSpecialities,
+} from "../redux/slices/doctorSlice";
 const DoctorPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     loading,
@@ -35,9 +43,24 @@ const DoctorPage = () => {
   } = useQuery(CLINICS_BY_DOC_ID, {
     variables: { clinicsByDocIdId: id },
   });
-  console.log(id);
+  // console.log(id);
 
-  console.log("DOCtor", clinic_data);
+  // console.log("DOCtor", clinic_data);
+
+  const handleBookAppointment = (clinic) => {
+    dispatch(setDoctor(doctor_data.doctorById));
+    localStorage.setItem("doctor", JSON.stringify(doctor_data.doctorById));
+
+    dispatch(setDoctorClinics(clinic));
+    localStorage.setItem("clinics", JSON.stringify(clinic));
+
+    dispatch(setDoctorSpecialities(specialization_data.specialityByDocId));
+    localStorage.setItem(
+      "specialities",
+      JSON.stringify(specialization_data.specialityByDocId)
+    );
+    navigate(`/doctor/slot/${id}`);
+  };
   return (
     <>
       {doctor_data && doctor_data.doctorById && (
@@ -52,15 +75,14 @@ const DoctorPage = () => {
               <h2 className="text-xl font-bold">
                 {doctor_data.doctorById.name}
               </h2>
-              <p className="text-sm text-gray-600">
-                BDS, MDS - Paedodontics And Preventive Dentistry
-              </p>
-              <p className="text-sm text-gray-600">
-                Pediatric Dentist, Dentist, Dental Surgeon
-              </p>
+
               <p className="text-sm text-gray-600">
                 {doctor_data.doctorById.experience} Years Experience Overall
               </p>
+              <p className="text-sm text-gray-600">
+                ₹ {doctor_data.doctorById.fee} Appointment Fee
+              </p>
+
               <div className="flex items-center space-x-2 my-4">
                 <span className="text-white bg-green-600 rounded-full w-[20px] h-[20px] flex items-center justify-center">
                   ✓
@@ -87,34 +109,45 @@ const DoctorPage = () => {
                   </li>
                 ))}
             </ul>
+          </div>
+          <div>
             <p className="text-xl font-bold text-gray-700 my-4">
               {doctor_data.doctorById.name} Practices At
             </p>
             <ul className="ml-5 grid grid-cols-1  text-gray-500">
               {clinic_data &&
                 clinic_data.clinicsByDocId?.map((clinic) => (
-                  <li className="" key={clinic.id}>
-                    <div className="flex gap-2 items-center text-gray-700 ">
-                      <MdOutlineLocationOn fill="#CD7F32" />
-                      {clinic.name}
+                  <li
+                    className="flex gap-6 justify-between pr-10 my-10 border p-3"
+                    key={clinic.id}
+                  >
+                    <div>
+                      <div className="flex gap-2 items-center text-gray-700 ">
+                        <MdOutlineLocationOn fill="#CD7F32" />
+                        {clinic.name}
+                      </div>
+                      <p className="ml-10 text-sm">
+                        {clinic.address}, {clinic.city}
+                      </p>
                     </div>
-                    <p className="ml-10 text-sm">
-                      {clinic.address}, {clinic.city}
-                    </p>
+                    <button
+                      className="text-white bg-[#199fd9] p-2 w-[220px] h-[48px] rounded-md"
+                      onClick={()=>handleBookAppointment(clinic)}
+                    >
+                      <div className=" flex items-center justify-center gap-2">
+                        <BsFillLightningChargeFill fill="#FFFFFF" />
+                        <p>Book Appointment</p>
+                      </div>
+
+                      <p className="text-xs text-center">
+                        Instant Pay Available
+                      </p>
+                    </button>
                   </li>
                 ))}
             </ul>
           </div>
-          <div className="flex items-center justify-center">
-            <button className="text-white bg-[#199fd9] p-2 w-[220px] h-[48px] rounded-md">
-              <div className=" flex items-center justify-center gap-2">
-                <BsFillLightningChargeFill fill="#FFFFFF" />
-                <p>Book Appointment</p>
-              </div>
-
-              <p className="text-xs text-center">Instant Pay Available</p>
-            </button>
-          </div>
+          <div className="flex items-center justify-center"></div>
         </div>
       )}
     </>

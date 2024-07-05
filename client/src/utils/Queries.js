@@ -28,6 +28,8 @@ export const CLINICS_BY_DOC_ID = gql`
       name
       address
       city
+      start_time
+      end_time
     }
   }
 `;
@@ -59,6 +61,63 @@ export const LOGIN_USER = gql`
       name
       email
       token
+    }
+  }
+`;
+
+export const CREATE_PAYMENT = gql`
+  mutation CreateOrder($amount: Int) {
+    createOrder(amount: $amount) {
+      id
+      currency
+      amount
+      receipt
+      status
+      success
+    }
+  }
+`;
+
+export const VERIFY_PAYMENT = gql`
+  mutation VerifyPayment(
+    $razorpayOrderId: String!
+    $razorpayPaymentId: String!
+    $razorpaySignature: String!
+  ) {
+    verifyPayment(
+      razorpay_order_id: $razorpayOrderId
+      razorpay_payment_id: $razorpayPaymentId
+      razorpay_signature: $razorpaySignature
+    ) {
+      success
+      message
+    }
+  }
+`;
+
+export const ALREADY_BOOKED_SLOTS = gql`
+  query AppointmentByDocIdAndClinicId($docId: ID!, $clinicId: ID!) {
+    appointmentByDocIdAndClinicId(doc_id: $docId, clinic_id: $clinicId) {
+      start_time
+    }
+  }
+`;
+
+export const ADD_APPOINTMENT = gql`
+  mutation AddAppointment(
+    $docId: ID!
+    $patId: ID!
+    $clinicId: ID!
+    $startTime: Int!
+  ) {
+    addAppointment(
+      doc_id: $docId
+      pat_id: $patId
+      clinic_id: $clinicId
+      start_time: $startTime
+    ) {
+      id
+      success
     }
   }
 `;

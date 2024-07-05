@@ -1,6 +1,8 @@
 // resolvers.js
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 const resolvers = {
   Query: {
     //working correct
@@ -90,7 +92,7 @@ const resolvers = {
 
     clinicsByDocId: async (_, { id }, { pool }) => {
       const [rows] = await pool.query(
-        `SELECT c.c_id, c.ClinicName, c.Address, c.City FROM Clinic c
+        `SELECT c.c_id, c.ClinicName, c.Address, c.City, dc.start_time, dc.end_time FROM Clinic c
           JOIN doc_clin_mapping dc ON c.c_id =  dc.clinic_id
           WHERE dc.doct_id = ?`,
         [id]
@@ -102,6 +104,8 @@ const resolvers = {
         name: row.ClinicName,
         address: row.Address,
         city: row.City,
+        start_time: row.start_time,
+        end_time: row.end_time,
       }));
     },
     specialityByDocId: async (_, { id }, { pool }) => {
@@ -116,6 +120,48 @@ const resolvers = {
       return rows.map((row) => ({
         id: row.spec_id,
         name: row.spec_name,
+      }));
+    },
+    appointmentByDocIdAndClinicId: async (
+      _,
+      { doc_id, clinic_id },
+      { pool }
+    ) => {
+      const [appointments] = await pool.query(
+        `SELECT t.doc_id, t.pat_id, t.clinic_id, t.slot_start_time, t.doc_pat_id FROM doc_pat_mapping t
+        WHERE t.doc_id=? AND t.clinic_id=?`,
+        [doc_id, clinic_id]
+      );
+
+      console.log("APPOINTMENTS", appointments);
+
+      return appointments.map((row) => ({
+        id: row.doc_pat_id,
+        doc_id: row.doc_id,
+        pat_id: row.pat_id,
+        clinic_id: row.clinic_id,
+        start_time: row.slot_start_time,
+      }));
+    },
+    appointmentsByPatId: async (
+      _,
+      { pat_id },
+      { pool }
+    ) => {
+      const [appointments] = await pool.query(
+        `SELECT t.doc_id, t.pat_id, t.clinic_id, t.slot_start_time, t.doc_pat_id FROM doc_pat_mapping t
+         WHERE t.pat_id=?`,
+        [pat_id]
+      );
+
+      console.log("APPOINTMENTS", appointments);
+
+      return appointments.map((row) => ({
+        id: row.doc_pat_id,
+        doc_id: row.doc_id,
+        pat_id: row.pat_id,
+        clinic_id: row.clinic_id,
+        start_time: row.slot_start_time,
       }));
     },
   },
@@ -133,7 +179,6 @@ const resolvers = {
         throw new Error("Email is not valid");
       }
 
-      
       const [existingUser] = await pool.query(
         `SELECT p.email FROM Patient p
         WHERE p.email=?`,
@@ -189,6 +234,76 @@ const resolvers = {
         name: existingUser[0].p_name,
         email: existingUser[0].email,
         token: token,
+      };
+    },
+    createOrder: async (_, { amount }, { pool }) => {
+      var options = {
+        amount: amount * 100,
+        currency: "INR",
+        receipt: Math.random(Date.now()).toString(),
+      };
+
+      try {
+        const instance = new Razorpay({
+          key_id: process.env.RAZORPAY_KEY_ID,
+          key_secret: process.env.RAZORPAY_KEY_SECRET,
+        });
+
+        const paymentResponse = await instance.orders.create(options);
+        console.log("instance", paymentResponse);
+        return {
+          id: paymentResponse.id,
+          currency: paymentResponse.currency,
+          amount: paymentResponse.amount,
+          receipt: paymentResponse.receipt,
+          status: paymentResponse.status,
+          success: true,
+        };
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+    verifyPayment: async (
+      _,
+      { razorpay_order_id, razorpay_payment_id, razorpay_signature }
+    ) => {
+      const body = razorpay_order_id + "|" + razorpay_payment_id;
+      const expectedSignature = crypto
+        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+        .update(body.toString())
+        .digest("hex");
+
+      if (expectedSignature === razorpay_signature) {
+        // Add your business logic here (e.g., enroll student, update database, etc.)
+        return { success: true, message: "Payment Verified" };
+      }
+
+      return { success: false, message: "Payment Failed" };
+    },
+    addAppointment: async (
+      _,
+      { doc_id, pat_id, clinic_id, start_time },
+      { pool }
+    ) => {
+      const [existingAppointment] = await pool.query(
+        `SELECT * FROM doc_pat_mapping WHERE doc_id=? AND clinic_id=? AND slot_start_time=?`,
+        [doc_id, clinic_id, start_time]
+      );
+      if (existingAppointment.length > 0) {
+        throw new Error("Slot is already booked by other patient");
+      }
+
+      const [addedAppointment] = await pool.query(
+        `INSERT INTO doc_pat_mapping (doc_id,pat_id,clinic_id, slot_start_time) VALUES (?, ?, ?,?);`,
+        [doc_id, pat_id, clinic_id, start_time]
+      );
+      return {
+        id: addedAppointment.insertId,
+        doc_id: doc_id,
+        pat_id: pat_id,
+        clinic_id: clinic_id,
+        start_time: start_time,
+        success: true,
       };
     },
   },

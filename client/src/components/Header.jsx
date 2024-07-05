@@ -14,6 +14,9 @@ const Header = () => {
     dispatch(setUser(null));
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("doctor");
+    localStorage.removeItem("clinics");
+    localStorage.removeItem("specialities");
     toast.success("Logged Out");
     navigate("/");
   };
