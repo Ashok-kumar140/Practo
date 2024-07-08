@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
-import { useQuery, gql, useMutation } from "@apollo/client";
+import { useParams } from "react-router-dom";
+import {  useMutation } from "@apollo/client";
 import Doctorcard from "../components/Doctorcard";
 import Searchbar from "../components/Searchbar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DOCTORS_BY_SPECIALITY } from "../utils/Queries";
 const ListingPage = () => {
-  const { spec_name } = useParams();
+  const { spec_name,location } = useParams();
   const updated_name = spec_name.split("-").join(" ");
   const [items, setItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [offset,setOffset]=useState(0);
-  console.log("updated",updated_name);
 
 
 
-  const [doctorsBySpec, { data: speciality_data, loading, error }] =
+  const [doctorsBySpec] =
     useMutation(DOCTORS_BY_SPECIALITY);
 
   const fetchChunkData = async (limit, offset) => {
     try {
       const data = await doctorsBySpec({
-        variables: { speciality: updated_name, limit: 6, offset: 0 },
+        variables: { speciality: updated_name, limit: 6, offset: 0,location:location },
       });
+      // console.log("CHUNCKS",data)
      
       setItems(data?.data?.doctorBySpeciality);
       if(data?.data?.doctorBySpeciality.length<6){
@@ -39,13 +39,10 @@ const ListingPage = () => {
 
   const fetchMoreData = async() => {
     setOffset(offset+6)
-    // if(offset>17){
-    //   setHasMore(false);
-    // }
-
+    
     try {
       const data = await doctorsBySpec({
-        variables: { speciality: updated_name, limit: 6, offset: offset },
+        variables: { speciality: updated_name, limit: 6, offset: offset,location:location },
       });
       console.log("data","offset",data);
 
@@ -61,17 +58,6 @@ const ListingPage = () => {
 
 
   };
-
-  // const {
-  //   loading,
-  //   error,
-  //   data: speciality_data,
-  // } = useQuery(DOCTORS_BY_SPECIALITY, {
-  //   variables: { speciality: updated_name, limit: 10, offset: 0 },
-  // });
-  // console.log(updated_name);
-
-  console.log("DOC", items);
 
   return (
     <>

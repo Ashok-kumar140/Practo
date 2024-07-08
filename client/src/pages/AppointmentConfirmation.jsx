@@ -1,13 +1,11 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  CANCEL_APPOINTMENT,
-  USER_APPOINT,
-} from "../utils/Queries";
+import { CANCEL_APPOINTMENT, USER_APPOINT } from "../utils/Queries";
 import confirm_image from "../assets/accept-icon.png";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 const AppointmentConfirmation = () => {
   const [appointments, setAppointments] = useState([]);
   const { user } = useSelector((state) => state.auth);
@@ -23,23 +21,9 @@ const AppointmentConfirmation = () => {
     }
   }, []);
 
-  // const {
-  //   loading,
-  //   error,
-  //   data: appointmentdata,
-  // } = useQuery(USER_APPOINTMENTS, {
-  //   variables: { patId: user?.id },
-  // });
+  const [cancelAppointment] = useMutation(CANCEL_APPOINTMENT);
 
-  const [
-    cancelAppointment,
-    { data: cancel_data, loading: cancelLoading, error: cancelError },
-  ] = useMutation(CANCEL_APPOINTMENT);
-
-  const [
-    user_appoints,
-    { data: appoint_data, loading: appointLoading, error: appointError },
-  ] = useMutation(USER_APPOINT);
+  const [user_appoints] = useMutation(USER_APPOINT);
 
   useEffect(() => {
     fetchAppointments();
@@ -50,7 +34,6 @@ const AppointmentConfirmation = () => {
       const { data } = await user_appoints({
         variables: { patId: user?.id },
       });
-      console.log("USERS", data);
       setAppointments(data?.appointmentsByPatId);
     } catch (error) {
       console.log("Error while fetching user appointments", error);
@@ -62,6 +45,7 @@ const AppointmentConfirmation = () => {
       const response = await cancelAppointment({
         variables: { appointmentId: id },
       });
+      toast.success("Appointment cancel successfully");
       fetchAppointments();
     } catch (error) {
       console.log("Error while canceling appointment", error);

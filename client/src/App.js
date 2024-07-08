@@ -16,7 +16,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route
-          path="/search/speaciality/:spec_name"
+          path="/search/speaciality/:spec_name/:location"
           element={<ListingPage />}
         />
         <Route path="/search/doctor/:id" element={<DoctorPage />} />

@@ -9,8 +9,6 @@ import {
 import { useMutation } from "@apollo/client";
 import toast from "react-hot-toast";
 import practo_logo from "../assets/logo.png";
-
-import { loadScript } from "../utils/Loadscript";
 import { MdOutlineLocationOn } from "react-icons/md";
 const PaymentSummaryPage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -19,33 +17,31 @@ const PaymentSummaryPage = () => {
   const { doctor, doctor_clinics, doctor_specialities } = useSelector(
     (state) => state.doctor
   );
-  // const amount = doctor.fee;
   useEffect(() => {
     if (!user) {
-      navigate('/login')
+      navigate("/login");
       return;
     }
-  },[]);
-
+  }, []);
   const [
     createPayment,
+    // eslint-disable-next-line
     { data: create_pay_data, loading, error: create_pay_error },
   ] = useMutation(CREATE_PAYMENT);
 
   const [
     verifypayment,
+    // eslint-disable-next-line
     { data: verifyData, loading: verifyLoading, error: verifyError },
   ] = useMutation(VERIFY_PAYMENT);
   const [
     addAppointment,
     {
       data: appointmentData,
-      loading: appointmentLoading,
-      error: appointmentError,
+      // eslint-disable-next-line
+      loading: appointmentLoading, error: appointmentError,
     },
   ] = useMutation(ADD_APPOINTMENT);
-
-  
 
   const handlePayment = async () => {
     try {
@@ -74,7 +70,6 @@ const PaymentSummaryPage = () => {
         },
       };
       const paymentObject = new window.Razorpay(options);
-      // console.log("payment", paymentObject);
 
       paymentObject.open();
       paymentObject.on("payment.failed", function (response) {
@@ -88,7 +83,7 @@ const PaymentSummaryPage = () => {
 
   const verifyPayment = async (response) => {
     try {
-      //   console.log("response: ", response);
+
 
       const { data } = await verifypayment({
         variables: {
@@ -127,7 +122,7 @@ const PaymentSummaryPage = () => {
 
   console.log("SPECIALITIES:", doctor_specialities);
   return (
-    <div className="w-[60%] mx-auto mt-20 mb-10 items-center justify-center border m">
+    <div className="w-[50%] mx-auto mt-20 mb-10 items-center justify-center border m">
       <h1 className="flex items-center justify-center text-2xl font-semibold text-gray-800 mt-5">
         Payment Summary
       </h1>
@@ -143,9 +138,7 @@ const PaymentSummaryPage = () => {
             />
           </div>
           <div>
-            <p className="text-[#199fd9] rounded-md text-xl">
-              {doctor?.name}
-            </p>
+            <p className="text-[#199fd9] rounded-md text-xl">{doctor?.name}</p>
             <p>{doctor?.experience} years experience</p>
             <p>₹ {doctor?.fee} Consultation Fees</p>
           </div>
@@ -157,7 +150,7 @@ const PaymentSummaryPage = () => {
           ))}
         </div> */}
         <div className="mt-10 font-bold">Clinic Address:</div>
-        <div >
+        <div>
           <div className="flex gap-2 items-center text-gray-700 ">
             <MdOutlineLocationOn fill="#CD7F32" />
             {doctor_clinics?.name}
@@ -166,12 +159,21 @@ const PaymentSummaryPage = () => {
             {doctor_clinics?.address}, {doctor_clinics?.city}
           </p>
         </div>
-       
-        <div className="mt-10 font-semibold text-lg">Timing of appointment is : {`${slot_time}:00`}</div>
 
-        <div className="mt-5 font-semibold text-sm">Fee to pay for this appointment is ₹{doctor?.fee}</div>
+        <div className="mt-10 font-semibold text-lg">
+          Timing of appointment is : {`${slot_time}:00`}
+        </div>
+
+        <div className="mt-5 font-semibold text-sm">
+          Fee to pay for this appointment is ₹{doctor?.fee}
+        </div>
         <div className="flex justify-center items-center mt-5">
-          <button className="p-2 bg-[#199fd9] rounded-md text-white" onClick={handlePayment}>Pay ₹ {doctor?.fee} </button>
+          <button
+            className="p-2 bg-[#199fd9] rounded-md text-white"
+            onClick={handlePayment}
+          >
+            Pay ₹ {doctor?.fee}{" "}
+          </button>
         </div>
       </div>
     </div>

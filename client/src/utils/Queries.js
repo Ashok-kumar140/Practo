@@ -17,11 +17,13 @@ export const DOCTORS_BY_SPECIALITY = gql`
     $speciality: String!
     $limit: Int!
     $offset: Int!
+    $location: String!
   ) {
     doctorBySpeciality(
       speciality: $speciality
       limit: $limit
       offset: $offset
+      location: $location
     ) {
       id
       name
@@ -29,6 +31,7 @@ export const DOCTORS_BY_SPECIALITY = gql`
       experience
       profile_img
       specialization
+      City
     }
   }
 `;
@@ -188,19 +191,20 @@ export const CANCEL_APPOINTMENT = gql`
 `;
 
 export const USER_APPOINT = gql`
-mutation AppointmentsByPatId($patId: ID!) {
-  appointmentsByPatId(pat_id: $patId) {
-    id
-    doc_id
-    pat_id
-    clinic_id
-    start_time 
-    doc_name
-    doc_fee
-    doc_experience
-    clinic_name
-    clinic_address
-    clinic_city
-    doc_profile
+  mutation AppointmentsByPatId($patId: ID!) {
+    appointmentsByPatId(pat_id: $patId) {
+      id
+      doc_id
+      pat_id
+      clinic_id
+      start_time
+      doc_name
+      doc_fee
+      doc_experience
+      clinic_name
+      clinic_address
+      clinic_city
+      doc_profile
+    }
   }
-}`
+`;

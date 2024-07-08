@@ -28,12 +28,13 @@ const Doctorcard = ({ doctor }) => {
         <div>
           <p
             onClick={handleGoProfile}
-            className="text-[#199fd9] text-xl underline hover:scale-105 transition-all duration-300 cursor-pointer"
+            className="text-[#199fd9] text-xl hover:scale-105 transition-all duration-300 cursor-pointer"
           >
             {doctor.name}
           </p>
           <p>{doctor.experience} years experience</p>
           <p>₹ {doctor.fee} Consultation Fees</p>
+          <p>Address: {doctor?.City}</p>
         </div>
       </div>
       <div>

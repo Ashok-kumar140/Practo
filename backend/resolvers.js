@@ -49,31 +49,38 @@ const resolvers = {
         profile_img: row.profile_img,
       }));
     },
-    doctorBySpecialities: async (
-      _,
-      { speciality, limit, offset },
-      { pool }
-    ) => {
-      const [rows] = await pool.query(
-        `SELECT d.d_id,d.d_name,d.d_fee,d.d_experience,d.profile_img,s.spec_name
-                                         FROM Doctor d
-                                         JOIN Spec_Doct_mapping sd ON d.d_id = sd.d_id
-                                         JOIN Specialization s ON sd.s_id = s.spec_id
-                                         WHERE s.spec_name LIKE ?
-                                        
-                                         ;`,
-        [`%${speciality}%`]
-      );
-      console.log("Rows", rows);
-      return rows.map((row) => ({
-        id: row.d_id,
-        name: row.d_name,
-        fee: row.d_fee,
-        experience: row.d_experience,
-        profile_img: row.profile_img,
-        specialization: row.spec_name,
-      }));
-    },
+    // doctorBySpecialities: async (_, { speciality,location }, { pool }) => {
+    //   // const [rows] = await pool.query(
+    //   //   `SELECT d.d_id,d.d_name,d.d_fee,d.d_experience,d.profile_img,s.spec_name
+    //   //                                    FROM Doctor d
+    //   //                                    JOIN Spec_Doct_mapping sd ON d.d_id = sd.d_id
+    //   //                                    JOIN Specialization s ON sd.s_id = s.spec_id
+    //   //                                    WHERE s.spec_name LIKE ?
+
+    //   //                                    ;`,
+    //   //   [`%${speciality}%`]
+    //   // );
+    //   const [rows] = await pool.query(
+    //     `SELECT d.d_id,d.d_name,d.d_fee,d.d_experience,d.profile_img,s.spec_name, c.City
+    //       FROM Doctor d
+    //       JOIN Spec_Doct_mapping sd ON d.d_id = sd.d_id
+    //       JOIN Specialization s ON sd.s_id = s.spec_id
+    //       JOIN doc_clin_mapping cdm ON d.d_id = cdm.doct_id
+    //       JOIN Clinic c ON cdm.clinic_id = c.c_id
+    //       WHERE s.spec_name LIKE ? AND c.City = ?
+    //       ;`,
+    //     [`%${speciality}%`,location]
+    //   );
+    //   console.log("Rows", rows);
+    //   return rows.map((row) => ({
+    //     id: row.d_id,
+    //     name: row.d_name,
+    //     fee: row.d_fee,
+    //     experience: row.d_experience,
+    //     profile_img: row.profile_img,
+    //     specialization: row.spec_name,
+    //   }));
+    // },
     specialities: async (_, { name }, { pool }) => {
       const [rows] = await pool.query(
         `SELECT * FROM Specialization WHERE
@@ -335,16 +342,18 @@ const resolvers = {
         start_time: row.slot_start_time,
       }));
     },
-    doctorBySpeciality: async (_, { speciality, limit, offset }, { pool }) => {
+    doctorBySpeciality: async (_, { speciality, location, limit, offset }, { pool }) => {
       const [rows] = await pool.query(
-        `SELECT d.d_id,d.d_name,d.d_fee,d.d_experience,d.profile_img,s.spec_name
+        `SELECT d.d_id,d.d_name,d.d_fee,d.d_experience,d.profile_img,s.spec_name, c.City
           FROM Doctor d
           JOIN Spec_Doct_mapping sd ON d.d_id = sd.d_id
           JOIN Specialization s ON sd.s_id = s.spec_id
-          WHERE s.spec_name LIKE ?
+          JOIN doc_clin_mapping cdm ON d.d_id = cdm.doct_id
+          JOIN Clinic c ON cdm.clinic_id = c.c_id
+          WHERE s.spec_name LIKE ? AND c.City = ?
           LIMIT ? OFFSET ?
         `,
-        [`%${speciality}%`, limit, offset]
+        [`%${speciality}%`,location, limit, offset]
       );
       return rows.map((row) => ({
         id: row.d_id,
@@ -353,6 +362,7 @@ const resolvers = {
         experience: row.d_experience,
         profile_img: row.profile_img,
         specialization: row.spec_name,
+        City:row.City
       }));
     },
     cancelAppointment: async (_, { appointment_id }, { pool }) => {

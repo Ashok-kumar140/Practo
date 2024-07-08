@@ -1,35 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { BiSolidCommentAdd } from "react-icons/bi";
 import {
-  ALREADY_BOOKED_SLOTS,
-  CLINICS_BY_DOC_ID,
-  DOCTOR_BY_ID,
   USER_APPOINTMENTS2,
 } from "../utils/Queries";
-import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "@apollo/client";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { useSelector } from "react-redux";
 
 const SlotPage = () => {
   const navigate = useNavigate();
   const [bookedSlots, setBookedSlots] = useState([]);
-  const [load,setLoad] = useState(false);
 
   const { doctor_clinics } = useSelector((state) => state.doctor);
   const { doctor } = useSelector((state) => state.doctor);
 
   console.log("DOC", doctor);
 
-  // const { loading, error, data } = useQuery(ALREADY_BOOKED_SLOTS, {
-  //   variables: { docId: doctor?.id, clinicId: doctor_clinics?.id },
-  // });
 
   const [alreadyBookedSlot, { data, loading, error }] =
     useMutation(USER_APPOINTMENTS2);
 
   const hanldeBookedSlot = async () => {
-    setLoad(true);
     try {
       const data = await alreadyBookedSlot({
         variables: {
@@ -46,25 +38,11 @@ const SlotPage = () => {
     } catch (error) {
       console.log("Error", error);
     }
-    setLoad(false);
   };
 
   useEffect(()=>{
     hanldeBookedSlot();
   },[]);
-
-  // console.log("Loading", loading);
-  // const BookedSlots = [];
-  // useEffect(() => {
-  //   if (data && data.appointmentByDocIdAndClinicId) {
-  //     console.log("DAAAAAA", data);
-  //     const BookedSlots = data.appointmentByDocIdAndClinicId.map(
-  //       (app) => app.start_time
-  //     );
-      // console.log("DATAA", bookedSlots);
-      // setBookedSlots(BookedSlots);
-  //   }
-  // }, [data]);
   if (loading) return <p>Loading...</p>;
 
   const slot = [];

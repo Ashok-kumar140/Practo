@@ -4,7 +4,6 @@ import { useQuery, gql } from "@apollo/client";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { TfiSearch } from "react-icons/tfi";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 const hardcodedSuggestions = [
   "Internal Medicine",
   "Ophthalmology",
@@ -16,6 +15,7 @@ const hardcodedSuggestions = [
 ];
 const Searchbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchLocation,setSearchLocation] = useState("Bangalore");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const navigate = useNavigate();
 
@@ -49,10 +49,10 @@ const Searchbar = () => {
   };
   const handleSuggestionClick = (suggestion) => {
     // setSearchQuery(suggestion);
-    setSearchQuery("")
+    setSearchQuery("");
     setShowSuggestions(false);
     const sugg = suggestion.split(" ").join("-");
-    navigate(`/search/speaciality/${sugg}`);
+    navigate(`/search/speaciality/${sugg}/${searchLocation}`);
   };
   const handleChange = (e) => {
     setSearchQuery(e.target.value);
@@ -63,11 +63,11 @@ const Searchbar = () => {
     }
   };
 
-  const handleOnSubmit =(e)=>{
+  const handleOnSubmit = (e) => {
     // e.preventDefault();
     const query = searchQuery.split(" ").join("-");
-    navigate(`/search/:${query}`)
-  }
+    navigate(`/search/:${query}`);
+  };
   const {
     loading: doctor_loading,
     error: doctor_error,
@@ -94,30 +94,34 @@ const Searchbar = () => {
 
   return (
     <>
-      {/* <div className="flex items-center border border-gray-300 rounded-md overflow-hidden bg-transparent w-full"> */}
-        <form onSubmit={handleOnSubmit} className="flex items-center border border-gray-300 rounded-md overflow-hidden bg-transparent w-full">
-          <div className="flex items-center px-4 border-r border-gray-300 w-[30%]">
-            <FaMapMarkerAlt className="text-gray-500" />
-            <input
-              type="text"
-              placeholder="Bangalore"
-              className="ml-2 outline-none py-2 w-full bg-transparent"
-            />
-          </div>
-          <div className="flex items-center px-4 w-[70%]">
-            <FaSearch className="text-gray-500" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleChange}
-              placeholder="Search doctors, clinics, hospitals, etc."
-              className="ml-2 outline-none py-2 w-full bg-transparent"
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-            />
-          </div>
-        </form>
-      {/* </div> */}
+      <form
+        onSubmit={handleOnSubmit}
+        className="flex items-center border border-gray-300 rounded-md overflow-hidden bg-transparent w-full"
+      >
+        <div className="flex items-center px-4 border-r border-gray-300 w-[30%]">
+          <FaMapMarkerAlt className="text-gray-500" />
+          <input
+            type="text"
+            placeholder="Bangalore"
+            onChange={(e)=>setSearchLocation(e.target.value)}
+            value={searchLocation}
+            className="ml-2 outline-none py-2 w-full bg-transparent"
+          />
+        </div>
+        <div className="flex items-center px-4 w-[70%]">
+          <FaSearch className="text-gray-500" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleChange}
+            placeholder="Search doctors, clinics, hospitals, etc."
+            className="ml-2 outline-none py-2 w-full bg-transparent"
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
+        </div>
+      </form>
+
       <div className="absolute z-30 left-[42%] top-[14.5%] w-[28%]">
         {showSuggestions && searchQuery.trim() === "" && (
           <div className=" bg-white rounded-b shadow-lg mt-1 z-10 border-[1px] border-gray-400 w-[100%]">

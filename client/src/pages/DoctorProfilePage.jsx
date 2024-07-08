@@ -113,14 +113,14 @@ const DoctorPage = () => {
             </ul>
           </div>
           <div>
-            <p className="text-xl font-bold text-gray-700 my-4">
+            <p className="text-xl font-bold text-gray-700 mt-4">
               {doctor_data.doctorById.name} Practices At
             </p>
             <ul className="ml-5 grid grid-cols-1  text-gray-500">
               {clinic_data &&
                 clinic_data.clinicsByDocId?.map((clinic) => (
                   <li
-                    className="flex gap-6 justify-between pr-10 my-10 border p-3"
+                    className="flex gap-6 justify-between pr-10 my-7 border p-3"
                     key={clinic.id}
                   >
                     <div>
