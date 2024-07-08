@@ -11,19 +11,9 @@ const ListingPage = () => {
   const [items, setItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [offset,setOffset]=useState(0);
+  console.log("updated",updated_name);
 
-  // const specialities_data = gql`
-  //   query DoctorBySpecialities($speciality: String!) {
-  //     doctorBySpecialities(speciality: $speciality) {
-  //       id
-  //       name
-  //       fee
-  //       experience
-  //       profile_img
-  //       specialization
-  //     }
-  //   }
-  // `;
+
 
   const [doctorsBySpec, { data: speciality_data, loading, error }] =
     useMutation(DOCTORS_BY_SPECIALITY);
@@ -35,6 +25,9 @@ const ListingPage = () => {
       });
      
       setItems(data?.data?.doctorBySpeciality);
+      if(data?.data?.doctorBySpeciality.length<6){
+        setHasMore(false);
+      }
     } catch (error) {
       console.log("Error", error);
     }
@@ -42,18 +35,23 @@ const ListingPage = () => {
  
   useEffect(() => {
     fetchChunkData();
-  }, []);
+  }, [updated_name]);
 
   const fetchMoreData = async() => {
     setOffset(offset+6)
-    if(offset>17){
-      setHasMore(false);
-    }
+    // if(offset>17){
+    //   setHasMore(false);
+    // }
 
     try {
       const data = await doctorsBySpec({
         variables: { speciality: updated_name, limit: 6, offset: offset },
       });
+      console.log("data","offset",data);
+
+      if(data?.data?.doctorBySpeciality.length<6){
+        setHasMore(false);
+      }
      
       setItems([...items,...data?.data?.doctorBySpeciality]);
     } catch (error) {
@@ -73,7 +71,7 @@ const ListingPage = () => {
   // });
   // console.log(updated_name);
 
-  console.log("DOC", speciality_data);
+  console.log("DOC", items);
 
   return (
     <>
@@ -83,8 +81,7 @@ const ListingPage = () => {
 
       <div className="md:w-[60%] mx-auto mt-20">
         <h1 className="text-3xl font-bold">
-          {speciality_data && speciality_data.doctorBySpeciality?.length}{" "}
-          doctors available for "{updated_name}"
+          Available results for "{updated_name}"
         </h1>
         <p className="text-lg text-gray-400 mb-3">
           Verified doctor details Book appointments with minimum wait-time &
@@ -95,12 +92,12 @@ const ListingPage = () => {
           next={fetchMoreData}
           hasMore={hasMore}
           loader={<h4 className="text-center mb-10">Loading...</h4>}
-          endMessage={<div className="text-center mb-10">Yay! You have seen it all</div>}
+          endMessage={<div className="text-center mb-10">You have reached at end of the list.</div>}
         >
           <div className="flex flex-col gap-4">
             {items &&
-              items.map((doctor) => (
-                <Doctorcard key={doctor.id} doctor={doctor} />
+              items.map((doctor,index) => (
+                <Doctorcard key={index} doctor={doctor} />
               ))}
           </div>
         </InfiniteScroll>

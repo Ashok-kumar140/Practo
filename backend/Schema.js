@@ -79,10 +79,10 @@ export const typeDefs = `#graphql
     addAppointment(doc_id:ID!,pat_id:ID!,clinic_id:ID!,start_time:Int!): Appointment
     appointmentByDocIdAndClinicId(doc_id:ID!,clinic_id:ID!):[Appointment]
     doctorBySpeciality(speciality:String!, limit:Int!, offset:Int!):[Doctor]
+    cancelAppointment(appointment_id:ID!):Appointment
+    appointmentsByPatId(pat_id:ID!):[Appointment]
   },
-  # Doctor:{
-  #   clinics: {}
-  # }
+ 
 
   
 `;

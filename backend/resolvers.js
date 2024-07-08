@@ -355,6 +355,45 @@ const resolvers = {
         specialization: row.spec_name,
       }));
     },
+    cancelAppointment: async (_, { appointment_id }, { pool }) => {
+      const [rows] = await pool.query(
+        `DELETE FROM doc_pat_mapping WHERE doc_pat_id = ?`,
+        [appointment_id]
+      );
+
+      console.log(rows);
+
+      return rows[0];
+    },
+    appointmentsByPatId: async (_, { pat_id }, { pool }) => {
+      const [appointments] = await pool.query(
+        `SELECT a.doc_pat_id, a.pat_id, a.slot_start_time, d.d_id as doc_id, d.d_name as doc_name,
+                  d.d_experience, d.d_fee, c.c_id as clinic_id, c.ClinicName as clinic_name, d.profile_img,
+                  c.Address, c.City
+           FROM doc_pat_mapping a
+           JOIN Doctor d ON a.doc_id = d.d_id
+           JOIN Clinic c ON a.clinic_id = c.c_id
+           WHERE a.pat_id = ?`,
+        [pat_id]
+      );
+
+      console.log("APPOINTMENTS", appointments);
+
+      return appointments.map((row) => ({
+        id: row.doc_pat_id,
+        doc_id: row.doc_id,
+        pat_id: row.pat_id,
+        clinic_id: row.clinic_id,
+        start_time: row.slot_start_time,
+        doc_name: row.doc_name,
+        clinic_address: row.Address,
+        clinic_city: row.City,
+        doc_fee: row.d_fee,
+        clinic_name: row.clinic_name,
+        doc_experience: row.d_experience,
+        doc_profile: row.profile_img,
+      }));
+    },
   },
 };
 

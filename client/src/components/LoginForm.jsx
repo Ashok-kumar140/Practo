@@ -91,12 +91,12 @@ const LoginForm = ({ setIsLogin }) => {
           />
           {!showPassword ? (
             <MdOutlineRemoveRedEye
-              className="absolute top-[40px] right-[20px] text-white cursor-pointer"
+              className="absolute top-[40px] right-[20px] text-black cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             />
           ) : (
             <FaRegEyeSlash
-              className="absolute top-[40px] right-[20px] text-white cursor-pointer"
+              className="absolute top-[40px] right-[20px] text-black cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             />
           )}

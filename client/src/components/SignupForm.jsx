@@ -102,12 +102,12 @@ const SignupForm = ({ setIsLogin }) => {
           />
           {!showPassword ? (
             <MdOutlineRemoveRedEye
-              className="absolute top-[258px] right-[45px] text-white cursor-pointer"
+              className="absolute top-[258px] right-[45px] text-black cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             />
           ) : (
             <FaRegEyeSlash
-              className="absolute top-[258px] right-[45px] text-white cursor-pointer"
+              className="absolute top-[258px] right-[45px] text-black cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             />
           )}
@@ -129,12 +129,12 @@ const SignupForm = ({ setIsLogin }) => {
           />
           {!showConfirmPassword ? (
             <MdOutlineRemoveRedEye
-              className="absolute top-[338px] right-[45px] text-white cursor-pointer"
+              className="absolute top-[338px] right-[45px] text-black cursor-pointer"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             />
           ) : (
             <FaRegEyeSlash
-              className="absolute top-[338px] right-[45px] text-white cursor-pointer"
+              className="absolute top-[338px] right-[45px] text-black cursor-pointer"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             />
           )}

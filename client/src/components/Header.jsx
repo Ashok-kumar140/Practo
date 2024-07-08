@@ -35,12 +35,21 @@ const Header = () => {
           </Link>
         </div>
         {user ? (
-          <button
-            className=" text-gray-500 px-3 py-2 rounded-md border-2 border-gray-100 hover:text-cyan-400 hover:border-cyan-400"
-            onClick={handleLogout}
-          >
-            LogOut
-          </button>
+          <div className="flex gap-4">
+            <button
+              className=" text-gray-500 px-3 py-2 rounded-md border-2 border-gray-100 hover:text-cyan-400 hover:border-cyan-400"
+              onClick={()=>navigate('/appointment-confirmation')}
+            >
+              {user.name}
+            </button>
+
+            <button
+              className=" text-gray-500 px-3 py-2 rounded-md border-2 border-gray-100 hover:text-cyan-400 hover:border-cyan-400"
+              onClick={handleLogout}
+            >
+              LogOut
+            </button>
+          </div>
         ) : (
           <button
             className=" text-gray-500 px-3 py-2 rounded-md border-2 border-gray-100 hover:text-cyan-400 hover:border-cyan-400"

@@ -49,11 +49,6 @@ const PaymentSummaryPage = () => {
 
   const handlePayment = async () => {
     try {
-      //   const res = loadScript("https://checkout.razorpay.com/v1/checkout.js");
-
-      //   if (!res) {
-      //     toast.error("Razorpay SDK failed to load.");
-      //   }
       const { data } = await createPayment({
         variables: { amount: doctor.fee },
       });
@@ -132,12 +127,12 @@ const PaymentSummaryPage = () => {
 
   console.log("SPECIALITIES:", doctor_specialities);
   return (
-    <div className="w-[60%] mx-auto mt-20 mb-10 items-center justify-center">
-      <h1 className="flex items-center justify-center text-2xl font-semibold text-gray-800">
-        Confirm details about your Appointment
+    <div className="w-[60%] mx-auto mt-20 mb-10 items-center justify-center border m">
+      <h1 className="flex items-center justify-center text-2xl font-semibold text-gray-800 mt-5">
+        Payment Summary
       </h1>
-      <div className="w-[60%] bg-green-200 mx-auto p-5 rounded-lg mt-10">
-        <div className="flex items-center justify-between gap-3">
+      <div className="w-[100%] mx-auto p-5 rounded-lg mt-10">
+        <div className="flex items-center gap-10">
           <div className="rounded-[100%]">
             <img
               src={doctor?.profile_img}

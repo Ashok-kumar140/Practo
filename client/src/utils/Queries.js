@@ -179,3 +179,28 @@ export const USER_APPOINTMENTS2 = gql`
     }
   }
 `;
+export const CANCEL_APPOINTMENT = gql`
+  mutation CancelAppointment($appointmentId: ID!) {
+    cancelAppointment(appointment_id: $appointmentId) {
+      id
+    }
+  }
+`;
+
+export const USER_APPOINT = gql`
+mutation AppointmentsByPatId($patId: ID!) {
+  appointmentsByPatId(pat_id: $patId) {
+    id
+    doc_id
+    pat_id
+    clinic_id
+    start_time 
+    doc_name
+    doc_fee
+    doc_experience
+    clinic_name
+    clinic_address
+    clinic_city
+    doc_profile
+  }
+}`
