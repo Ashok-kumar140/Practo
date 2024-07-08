@@ -52,6 +52,8 @@ const AppointmentConfirmation = () => {
     }
   };
 
+  appointments && appointments.reverse();
+
   return (
     <div className="flex flex-col w-[60%] mx-auto mt-20 items-center justify-center">
       <div className="w-[100%]">
@@ -96,7 +98,7 @@ const AppointmentConfirmation = () => {
                         className="bg-red-400 p-2 rounded-md cursor-pointer"
                         onClick={() => handleCancelAppointment(app.id)}
                       >
-                        Cancel Payment
+                        Cancel Appointment
                       </div>
                     </div>
                     <div className="mt-10 font-bold">Clinic Address:</div>

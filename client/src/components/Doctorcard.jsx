@@ -14,7 +14,7 @@ const Doctorcard = ({ doctor }) => {
 
   };
   return (
-    <div className="flex items-center justify-between border-[1px] border-gray-200 rounded-lg p-2">
+    <div className="flex items-center justify-between border-b-[1px] border-gray-200 rounded-lg p-2">
       <div className="flex items-center justify-center gap-3">
         <div className="rounded-[100%]">
           <img
@@ -32,14 +32,14 @@ const Doctorcard = ({ doctor }) => {
           >
             {doctor.name}
           </p>
-          <p>{doctor.experience} years experience</p>
-          <p>₹ {doctor.fee} Consultation Fees</p>
-          <p>Address: {doctor?.City}</p>
+          <p className="text-gray-600">{doctor.experience} years experience</p>
+          <p className="text-gray-600">₹ {doctor.fee} Consultation Fees</p>
+          <p className="text-gray-800">Address: {doctor?.City}</p>
         </div>
       </div>
       <div>
         <button
-          className="text-white bg-[#199fd9] p-2 w-[220px] h-[48px] rounded-md"
+          className="text-white bg-[#199fd9] p-2 w-[200px] h-[50px] rounded-md"
           onClick={handleGoProfile}
         >
           <p>Book Clinic Visit</p>

@@ -39,7 +39,8 @@ const PaymentSummaryPage = () => {
     {
       data: appointmentData,
       // eslint-disable-next-line
-      loading: appointmentLoading, error: appointmentError,
+      loading: appointmentLoading,
+      error: appointmentError,
     },
   ] = useMutation(ADD_APPOINTMENT);
 
@@ -83,8 +84,6 @@ const PaymentSummaryPage = () => {
 
   const verifyPayment = async (response) => {
     try {
-
-
       const { data } = await verifypayment({
         variables: {
           razorpayOrderId: response.razorpay_order_id,
@@ -120,52 +119,87 @@ const PaymentSummaryPage = () => {
     }
   };
 
-  console.log("SPECIALITIES:", doctor_specialities);
+  // console.log("SPECIALITIES:", doctor_specialities);
   return (
-    <div className="w-[50%] mx-auto mt-20 mb-10 items-center justify-center border m">
+    <div className="w-[40%] mx-auto mt-20 mb-10 items-center justify-center m">
       <h1 className="flex items-center justify-center text-2xl font-semibold text-gray-800 mt-5">
         Payment Summary
       </h1>
       <div className="w-[100%] mx-auto p-5 rounded-lg mt-10">
-        <div className="flex items-center gap-10">
-          <div className="rounded-[100%]">
-            <img
-              src={doctor?.profile_img}
-              alt=""
-              width={100}
-              height={100}
-              className="rounded-full"
-            />
+        <div className="flex items-center justify-between border-b border-gray-400 pb-5">
+          <div className="text-lg font-semibold text-gray-800">
+            Doctor Info:{" "}
           </div>
-          <div>
-            <p className="text-[#199fd9] rounded-md text-xl">{doctor?.name}</p>
-            <p>{doctor?.experience} years experience</p>
-            <p>₹ {doctor?.fee} Consultation Fees</p>
+          <div className="flex items-center gap-7">
+            <div className="rounded-[100%]">
+              <img
+                src={doctor?.profile_img}
+                alt=""
+                width={100}
+                height={100}
+                className="rounded-full"
+              />
+            </div>
+            <div>
+              <p className="text-[#199fd9] rounded-md text-xl">
+                {doctor?.name}
+              </p>
+              <p>{doctor?.experience} years experience</p>
+              <p>₹ {doctor?.fee} Consultation Fees</p>
+            </div>
           </div>
-        </div>
-        {/* <div>
-          <p>Specialities of doctor are-</p>
-          {doctor_specialities.map((spec) => (
-            <p>{spec.name}</p>
-          ))}
-        </div> */}
-        <div className="mt-10 font-bold">Clinic Address:</div>
-        <div>
-          <div className="flex gap-2 items-center text-gray-700 ">
-            <MdOutlineLocationOn fill="#CD7F32" />
-            {doctor_clinics?.name}
-          </div>
-          <p className="ml-10 text-sm">
-            {doctor_clinics?.address}, {doctor_clinics?.city}
-          </p>
         </div>
 
-        <div className="mt-10 font-semibold text-lg">
-          Timing of appointment is : {`${slot_time}:00`}
+        <div className="flex items-center justify-between border-b border-gray-400 py-5">
+          <div className="text-lg font-semibold text-gray-800">
+            Patient Info:{" "}
+          </div>
+          <div className="flex items-center gap-7">
+            <div>
+              <p className="flex gap-3 text-gray-500">
+                Name:
+                <span className="text-gray-800">{user?.name}</span>
+              </p>
+              <p className="flex gap-3 text-gray-500">
+                Email:
+                <span className="text-gray-800">{user?.email}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-between border-b border-gray-400 py-5">
+          <div className="text-lg font-semibold text-gray-800">
+            Clinic Address:{" "}
+          </div>
+          <div className="flex items-center gap-7">
+            <div>
+              <div className="flex gap-2 items-center text-gray-700 ">
+                <MdOutlineLocationOn fill="#CD7F32" />
+                {doctor_clinics?.name}
+              </div>
+              <p className="ml-10 text-sm">
+                {doctor_clinics?.address}, {doctor_clinics?.city}
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-5 font-semibold text-sm">
-          Fee to pay for this appointment is ₹{doctor?.fee}
+        <div className="flex items-center justify-between border-b border-gray-400 py-5">
+          <div className="text-lg font-semibold text-gray-800">
+            Appointment Info:{" "}
+          </div>
+          <div className="flex items-center gap-7">
+            <div>
+              <p className="flex gap-3 text-gray-500">
+                Timing:
+                <span className="text-gray-800">{`${slot_time}:00`}</span>
+              </p>
+              <p className="flex gap-3 text-gray-500">
+                Fee:
+                <span className="text-gray-800">₹{doctor?.fee}</span>
+              </p>
+            </div>
+          </div>
         </div>
         <div className="flex justify-center items-center mt-5">
           <button

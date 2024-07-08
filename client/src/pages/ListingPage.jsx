@@ -73,6 +73,7 @@ const ListingPage = () => {
           Verified doctor details Book appointments with minimum wait-time &
           verified doctor details
         </p>
+        <div className="border-b border-gray-300 mb-5"></div>
         <InfiniteScroll
           dataLength={items.length}
           next={fetchMoreData}
@@ -83,7 +84,7 @@ const ListingPage = () => {
           <div className="flex flex-col gap-4">
             {items &&
               items.map((doctor,index) => (
-                <Doctorcard key={index} doctor={doctor} />
+                <Doctorcard key={index} doctor={doctor}/>
               ))}
           </div>
         </InfiniteScroll>
