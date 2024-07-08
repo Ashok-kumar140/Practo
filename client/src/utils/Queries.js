@@ -208,3 +208,34 @@ export const USER_APPOINT = gql`
     }
   }
 `;
+
+export const GET_ALL_REVIEWS = gql`
+  mutation AllReviews($docId: ID!) {
+    allReviews(doc_id: $docId) {
+      id
+      rating
+      review
+      doc_id
+      pat_id
+      user
+    }
+  }
+`;
+
+export const ADD_REVIEW = gql`
+  mutation AllReviews(
+    $patId: ID!
+    $docId: ID!
+    $review: String!
+    $rating: Float!
+  ) {
+    addReview(
+      pat_id: $patId
+      doc_id: $docId
+      review: $review
+      rating: $rating
+    ) {
+      id
+    }
+  }
+`;

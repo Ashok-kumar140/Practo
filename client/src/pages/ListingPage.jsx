@@ -14,20 +14,23 @@ const ListingPage = () => {
 
 
 
+
   const [doctorsBySpec] =
     useMutation(DOCTORS_BY_SPECIALITY);
 
   const fetchChunkData = async (limit, offset) => {
+    setHasMore(true);
+    console.log("has",hasMore);
     try {
       const data = await doctorsBySpec({
         variables: { speciality: updated_name, limit: 6, offset: 0,location:location },
       });
-      // console.log("CHUNCKS",data)
      
       setItems(data?.data?.doctorBySpeciality);
       if(data?.data?.doctorBySpeciality.length<6){
         setHasMore(false);
       }
+
     } catch (error) {
       console.log("Error", error);
     }

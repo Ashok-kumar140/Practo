@@ -35,6 +35,7 @@ const AppointmentConfirmation = () => {
         variables: { patId: user?.id },
       });
       setAppointments(data?.appointmentsByPatId);
+      // appointments.reverse();
     } catch (error) {
       console.log("Error while fetching user appointments", error);
     }
@@ -52,7 +53,7 @@ const AppointmentConfirmation = () => {
     }
   };
 
-  appointments && appointments.reverse();
+  // appointments && appointments.reverse();
 
   return (
     <div className="flex flex-col w-[60%] mx-auto mt-20 items-center justify-center">

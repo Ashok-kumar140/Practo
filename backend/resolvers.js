@@ -342,7 +342,11 @@ const resolvers = {
         start_time: row.slot_start_time,
       }));
     },
-    doctorBySpeciality: async (_, { speciality, location, limit, offset }, { pool }) => {
+    doctorBySpeciality: async (
+      _,
+      { speciality, location, limit, offset },
+      { pool }
+    ) => {
       const [rows] = await pool.query(
         `SELECT d.d_id,d.d_name,d.d_fee,d.d_experience,d.profile_img,s.spec_name, c.City
           FROM Doctor d
@@ -353,7 +357,7 @@ const resolvers = {
           WHERE s.spec_name LIKE ? AND c.City = ?
           LIMIT ? OFFSET ?
         `,
-        [`%${speciality}%`,location, limit, offset]
+        [`%${speciality}%`, location, limit, offset]
       );
       return rows.map((row) => ({
         id: row.d_id,
@@ -362,7 +366,7 @@ const resolvers = {
         experience: row.d_experience,
         profile_img: row.profile_img,
         specialization: row.spec_name,
-        City:row.City
+        City: row.City,
       }));
     },
     cancelAppointment: async (_, { appointment_id }, { pool }) => {
@@ -402,6 +406,37 @@ const resolvers = {
         clinic_name: row.clinic_name,
         doc_experience: row.d_experience,
         doc_profile: row.profile_img,
+      }));
+    },
+    addReview: async (_, { doc_id, pat_id, review, rating }, { pool }) => {
+      const [addedReview] = await pool.query(
+        `INSERT INTO Reviews (doc_id,pat_id,rating, review) VALUES (?, ?, ?,?);`,
+        [doc_id, pat_id, rating, review]
+      );
+
+      return {
+        id: addedReview.insertId,
+        doc_id: doc_id,
+        pat_id: pat_id,
+        rating: rating,
+        review: review,
+      };
+    },
+    allReviews: async (_, { doc_id }, { pool }) => {
+      const [reviews] = await pool.query(
+        `SELECT r.r_id, r.rating,r.review, r.pat_id, r.doc_id, p.p_name FROM Reviews r
+        JOIN Patient p ON p.p_id = r.pat_id WHERE r.doc_id = ?`,
+        [doc_id]
+      );
+      console.log("REviews",reviews);
+
+      return reviews.map((row) => ({
+        id: row.r_id,
+        doc_id: row.doc_id,
+        pat_id: row.pat_id,
+        rating: row.rating,
+        review: row.review,
+        user:row.p_name
       }));
     },
   },

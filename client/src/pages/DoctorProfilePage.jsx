@@ -1,12 +1,16 @@
-import React from "react";
-import { useQuery, gql } from "@apollo/client";
+import React, { useEffect, useState } from "react";
+import { useQuery, gql, useMutation } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { LiaHandPointRightSolid } from "react-icons/lia";
+import ReactStars from "react-stars";
+import { FaStar } from "react-icons/fa";
+import toast from "react-hot-toast";
 import {
   CLINICS_BY_DOC_ID,
   DOCTOR_BY_ID,
+  GET_ALL_REVIEWS,
   SPECIALIZATION_BY_DOC_ID,
 } from "../utils/Queries";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,12 +19,18 @@ import {
   setDoctorClinics,
   setDoctorSpecialities,
 } from "../redux/slices/doctorSlice";
+import ReviewModal from "../components/ReviewModal";
+import { averageRating } from "../utils/AverageRating";
+
 const DoctorPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // console.log("ID",id);
-  const {doctor} = useSelector((state)=>state.doctor);
+  const { doctor } = useSelector((state) => state.doctor);
+  const [reviewModal, setReviewModal] = useState(false);
+  const [allReviews, setAllReviews] = useState([]);
+  const { user } = useSelector((state) => state.auth);
 
   const {
     loading,
@@ -45,12 +55,10 @@ const DoctorPage = () => {
   } = useQuery(CLINICS_BY_DOC_ID, {
     variables: { clinicsByDocIdId: id },
   });
-  // console.log(id);
-
-  console.log("DOCtor",doctor_data);
+  const [getAllReviews] = useMutation(GET_ALL_REVIEWS);
 
   const handleBookAppointment = (clinic) => {
-    dispatch(setDoctor(doctor?(doctor):(doctor_data.doctorById)));
+    dispatch(setDoctor(doctor ? doctor : doctor_data.doctorById));
     localStorage.setItem("doctor", JSON.stringify(doctor_data.doctorById));
 
     dispatch(setDoctorClinics(clinic));
@@ -63,6 +71,31 @@ const DoctorPage = () => {
     );
     navigate(`/doctor/slot/${id}`);
   };
+
+  const handleReview = async (req, res) => {
+    if (user) {
+      setReviewModal(true);
+    } else {
+      toast.error("You have to be logged in to give rating");
+      navigate("/login");
+    }
+  };
+
+  const fetchAllReviews = async () => {
+    try {
+      const response = await getAllReviews({
+        variables: { docId: doctor.id },
+      });
+      // console.log("ALL revies", response);
+
+      setAllReviews(response?.data?.allReviews);
+    } catch (error) {
+      console.log("Error while fetching all reviews", error);
+    }
+  };
+  useEffect(() => {
+    fetchAllReviews();
+  }, []);
   return (
     <>
       {doctor_data && doctor_data.doctorById && (
@@ -95,7 +128,7 @@ const DoctorPage = () => {
               </div>
             </div>
           </div>
-          <div className="bg-blue-100 p-4 rounded-md mb-4">
+          <div className="bg-gray-100 p-4 rounded-md mb-4">
             <p className="text-xl font-bold text-gray-700 mb-4">
               Specialization In
             </p>
@@ -134,7 +167,7 @@ const DoctorPage = () => {
                     </div>
                     <button
                       className="text-white bg-[#199fd9] p-2 w-[220px] h-[48px] rounded-md"
-                      onClick={()=>handleBookAppointment(clinic)}
+                      onClick={() => handleBookAppointment(clinic)}
                     >
                       <div className=" flex items-center justify-center gap-2">
                         <BsFillLightningChargeFill fill="#FFFFFF" />
@@ -149,8 +182,79 @@ const DoctorPage = () => {
                 ))}
             </ul>
           </div>
-          <div className="flex items-center justify-center"></div>
+          <div className="border-b border-gray-500 mb-5"></div>
+          <div className="text-center text-xl font-semibold text-[#1e293b]">
+            Reviews
+          </div>
+          <div className="flex flex-col items-center justify-center">
+            <div className="w-full sm:px-3 my-3">
+              <div className="flex justify-between mb-12">
+                <div className="">
+                  <p>
+                    <span className="text-lg font-semibold">
+                      {averageRating(allReviews)}
+                    </span>
+                    \5.0
+                  </p>
+                  <p>({allReviews?.length} Reviews)</p>
+                </div>
+                <div>
+                  <button
+                    className="bg-[#199fd9] text-white p-2 rounded-md cursor-pointer"
+                    onClick={handleReview}
+                  >
+                    Add Review
+                  </button>
+                </div>
+              </div>
+
+              {allReviews?.length > 0 ? (
+                <div className="mb-7">
+                  {allReviews?.map((review) => (
+                    <div className="mb-7" key={review.id}>
+                      <div className="flex justify-between items-center">
+                        <div className="flex gap-2 items-center">
+                          <div className="w-[50px] h-[50px] rounded-full bg-gray-300 flex items-center justify-center text-3xl">
+                            {review.user[0]}
+                          </div>
+                          <p>{review?.user}</p>
+                        </div>
+                        <div>{review.createdAt}</div>
+                      </div>
+                      <div>
+                        <ReactStars
+                          count={5}
+                          value={review.rating}
+                          size={20}
+                          edit={false}
+                          activeColor="#ffd700"
+                          emptyIcon={<FaStar />}
+                          fullIcon={<FaStar />}
+                        />
+                        <p>{review.review}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-7 text-lg font-semibold flex items-center justify-center">
+                  <p>
+                    No Review given yet. You will be first to give review this
+                    audio book
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+      )}
+
+      {reviewModal && (
+        <ReviewModal
+          setReviewModal={setReviewModal}
+          fetchAllReviews={fetchAllReviews}
+          doc_id={doctor.id}
+        />
       )}
     </>
   );

@@ -38,6 +38,14 @@ export const typeDefs = `#graphql
     status: String
     success:Boolean
   }
+  type Review {
+    id:ID!
+    rating:Float!
+    review:String!
+    doc_id:ID!
+    pat_id:ID!
+    user:String!
+  }
   type Appointment{
     id:ID!
     doc_id:ID!
@@ -82,6 +90,8 @@ export const typeDefs = `#graphql
     doctorBySpeciality(speciality:String!, limit:Int!, offset:Int!,location:String!):[Doctor]
     cancelAppointment(appointment_id:ID!):Appointment
     appointmentsByPatId(pat_id:ID!):[Appointment]
+    allReviews(doc_id:ID!):[Review]
+    addReview(pat_id:ID!,doc_id:ID!,review:String!,rating:Float!):Review
   },
  
 
