@@ -12,7 +12,7 @@ const HomePage = () => {
       <div className="flex justify-center items-start w-full md:w-[40%] mx-auto mt-8">
         <Searchbar />
       </div>
-      <div className="sm:[90%] md:w-[80%] mx-auto mt-20">
+      <div className="sm:[90%] md:w-[70%] mx-auto mt-20">
         <div className="flex flex-wrap items-center justify-center ">
           <Card
             image={videoConsult}

@@ -8,7 +8,7 @@ const ReviewSlider = () => {
     infinite: true,
     speed: 900,
     slidesToShow: 1,
-    
+
     autoplay: true,
     autoplaySpeed: 2000,
     centerMode: false,
@@ -31,7 +31,8 @@ const ReviewSlider = () => {
               </p>
               <p className="font-semibold text-gray-700">Ashok</p>
             </div>
-          </div><div className="flex justify-center items-center w-full">
+          </div>
+          <div className="flex justify-center items-center w-full">
             <div className="w-full  border border-gray-200 rounded-lg shadow-md text-center flex flex-col justify-center items-center">
               <p className="text-gray-600 mb-6 p-3">
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sit
@@ -41,7 +42,8 @@ const ReviewSlider = () => {
               </p>
               <p className="font-semibold text-gray-700">Anil</p>
             </div>
-          </div><div className="flex justify-center items-center w-full">
+          </div>
+          <div className="flex justify-center items-center w-full">
             <div className="w-full  border border-gray-200 rounded-lg shadow-md text-center flex flex-col justify-center items-center">
               <p className="text-gray-600 mb-6 p-3">
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sit
@@ -52,9 +54,6 @@ const ReviewSlider = () => {
               <p className="font-semibold text-gray-700">Ayush</p>
             </div>
           </div>
-          
-          
-          
         </Slider>
       </div>
     </div>
