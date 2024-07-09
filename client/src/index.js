@@ -11,8 +11,13 @@ import { Store } from './redux/Store';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+// const client = new ApolloClient({
+//   uri: "http://localhost:4000/graphql",
+//   cache: new InMemoryCache(),
+// });
+
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: "https://practo.onrender.com/graphql",
   cache: new InMemoryCache(),
 });
 root.render(
